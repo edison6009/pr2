@@ -1,3 +1,4 @@
+//Flutter native support
 import 'package:flutter/material.dart';
 
 /// Un widget de ventana emergente que muestra un cuadro de diálogo con un título y un mensaje.

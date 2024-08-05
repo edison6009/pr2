@@ -1,7 +1,11 @@
+//Flutter native support
 import 'package:flutter/material.dart';
+//Api support
 import 'package:pr2/Api/Model/CountryModel.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
-import 'package:pr2/Constants/Constants.dart';
+import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/SuccessResponse.dart';
+import 'package:pr2/Api/Response/ErrorServerResponse.dart';
 
 class CountryCommandIndex {
   final CountryIndex _countryData;
@@ -17,7 +21,7 @@ class CountryCommandIndex {
         return CountryModel.fromJson(apiResponse.body);
       } else {
         // Retorna el error formateado
-        return ApiResponseErrorServer.fromApiResponse(apiResponse);
+        return ErrorServerResponse.fromApiResponse(apiResponse);
       }
     } on FlutterError catch (flutterError) {
       // Maneja errores específicos de Flutter
@@ -40,11 +44,11 @@ class CountryCommandCreate {
           name, abbreviation, dialing_code);
 
       if (apiResponse.statusCode == 201) {
-        // Retorna un objeto ApiResponseSuccess
-          return ApiResponseSuccess.fromApiResponse(apiResponse);
+        // Retorna un objeto SuccessResponse
+          return SuccessResponse.fromApiResponse(apiResponse);
       } else {
         // Para otros códigos de estado, incluyendo el 500
-          return ApiResponseErrorServer.fromApiResponse(apiResponse);
+          return ErrorServerResponse.fromApiResponse(apiResponse);
       }
     } on FlutterError catch (flutterError) {
       // Maneja errores específicos de Flutter
