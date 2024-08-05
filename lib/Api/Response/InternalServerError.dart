@@ -1,23 +1,23 @@
 //Api support
 import 'dart:convert';
 //Api support
-import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/ServiceResponse.dart';
 
-class ErrorServerResponse {
+class InternalServerError {
   final int code;
   final List<String> error;
   final String errors;
 
-  ErrorServerResponse({
+  InternalServerError({
     required this.code,
     required this.error,
     required this.errors,
   });
 
-  factory ErrorServerResponse.fromApiResponse(ApiResponse apiResponse) {
-    final data = apiResponse.body['data'];
+  factory InternalServerError.fromServiceResponse(ServiceResponse ServiceResponse) {
+    final data = ServiceResponse.body['data'];
 
-    return ErrorServerResponse(
+    return InternalServerError(
       code: data['code'],
       error: List<String>.from(data['title']),
       errors: data['errors'],

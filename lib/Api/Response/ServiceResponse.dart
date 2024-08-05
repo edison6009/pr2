@@ -1,14 +1,14 @@
 //Api support
 import 'dart:convert';
 
-class ApiResponse {
+class ServiceResponse {
   final Map<String, dynamic> body; // Contenido de la respuesta
   final int statusCode; // Código de estado HTTP
 
-  ApiResponse(this.body, this.statusCode);
+  ServiceResponse(this.body, this.statusCode);
 
-  factory ApiResponse.fromJsonString(String jsonString, int statusCode) {
+  factory ServiceResponse.fromJsonString(String jsonString, int statusCode) {
     // Deserializa la cadena JSON directamente en el constructor
-    return ApiResponse(jsonDecode(jsonString), statusCode);
+    return ServiceResponse(jsonDecode(jsonString), statusCode);
   }
 }

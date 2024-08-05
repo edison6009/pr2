@@ -4,9 +4,9 @@ import 'Countries.dart'; // Importa la nueva vista
 //Api support
 import 'package:pr2/Api/Command/CountryCommand.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
-import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/ServiceResponse.dart';
 import 'package:pr2/Api/Response/SuccessResponse.dart';
-import 'package:pr2/Api/Response/ErrorServerResponse.dart';
+import 'package:pr2/Api/Response/InternalServerError.dart';
 //App suporrt
 import 'package:pr2/App/Widget/PopupWindow.dart';
 import 'package:pr2/App/Widget/CustomForm.dart';
@@ -62,7 +62,7 @@ class Home extends StatelessWidget {
                     title: 'Success',
                     message: response.message, // Mensaje del cuerpo
                   );
-                } else if (response is ErrorServerResponse) {
+                } else if (response is InternalServerError) {
                   // Manejar el error
                   return PopupWindow(
                     title: 'Error',

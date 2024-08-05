@@ -1,14 +1,14 @@
 import 'package:http/http.dart' as http;
-import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/ServiceResponse.dart';
 import 'package:pr2/Constants/Constants.dart';
 import 'dart:convert';
 
 class CountryIndex {
-  Future<ApiResponse> fetchData() async {
+  Future<ServiceResponse> fetchData() async {
     var response = await http.get(Uri.parse('${ApiUrl.baseUrl}country/'));
 
-    // Crea ApiResponse directamente al decodificar la respuesta
-    return ApiResponse.fromJsonString(
+    // Crea ServiceResponse directamente al decodificar la respuesta
+    return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
       response.statusCode,
     );
@@ -16,7 +16,7 @@ class CountryIndex {
 }
 
 class CountryCreate {
-  Future<ApiResponse> createCountry(String name, String abbreviation, String dialing_code) async {
+  Future<ServiceResponse> createCountry(String name, String abbreviation, String dialing_code) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}country/create/');
 
@@ -39,8 +39,8 @@ class CountryCreate {
       body: body,
     );
 
-    // Retorna la respuesta de la API envuelta en ApiResponse
-    return ApiResponse.fromJsonString(
+    // Retorna la respuesta de la API envuelta en ServiceResponse
+    return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
       response.statusCode,
     );

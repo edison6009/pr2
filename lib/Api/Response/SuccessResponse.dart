@@ -1,7 +1,7 @@
 //Api support
 import 'dart:convert';
 //Api support
-import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/ServiceResponse.dart';
 
 class SuccessResponse {
   final Map<String, dynamic> body;
@@ -12,11 +12,11 @@ class SuccessResponse {
     required this.statusCode,
   });
 
-  factory SuccessResponse.fromApiResponse(ApiResponse apiResponse) {
+  factory SuccessResponse.fromServiceResponse(ServiceResponse ServiceResponse) {
     // Obtén el cuerpo de la respuesta y asegúrate de que no sea nulo
     return SuccessResponse(
-      body: apiResponse.body,
-      statusCode: apiResponse.statusCode,
+      body: ServiceResponse.body,
+      statusCode: ServiceResponse.statusCode,
     );
   }
 

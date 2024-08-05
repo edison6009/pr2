@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 //Api support
 import 'package:pr2/Api/Model/CountryModel.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
-import 'package:pr2/Api/Response/ApiResponse.dart';
+import 'package:pr2/Api/Response/ServiceResponse.dart';
 import 'package:pr2/Api/Response/SuccessResponse.dart';
-import 'package:pr2/Api/Response/ErrorServerResponse.dart';
+import 'package:pr2/Api/Response/InternalServerError.dart';
 
 class CountryCommandIndex {
   final CountryIndex _countryData;
@@ -14,14 +14,14 @@ class CountryCommandIndex {
 
   Future<dynamic> execute() async {
     try {
-      var apiResponse = await _countryData.fetchData();
+      var ServiceResponse = await _countryData.fetchData();
 
-      if (apiResponse.statusCode == 200) {
+      if (ServiceResponse.statusCode == 200) {
         // Convierte el mapa JSON a un modelo
-        return CountryModel.fromJson(apiResponse.body);
+        return CountryModel.fromJson(ServiceResponse.body);
       } else {
         // Retorna el error formateado
-        return ErrorServerResponse.fromApiResponse(apiResponse);
+        return InternalServerError.fromServiceResponse(ServiceResponse);
       }
     } on FlutterError catch (flutterError) {
       // Maneja errores específicos de Flutter
@@ -40,15 +40,15 @@ class CountryCommandCreate {
       String name, String abbreviation, String dialing_code) async {
     try {
       // Realiza la llamada al servicio para crear un nuevo país
-      var apiResponse = await _countryCreateService.createCountry(
+      var ServiceResponse = await _countryCreateService.createCountry(
           name, abbreviation, dialing_code);
 
-      if (apiResponse.statusCode == 201) {
+      if (ServiceResponse.statusCode == 201) {
         // Retorna un objeto SuccessResponse
-          return SuccessResponse.fromApiResponse(apiResponse);
+          return SuccessResponse.fromServiceResponse(ServiceResponse);
       } else {
         // Para otros códigos de estado, incluyendo el 500
-          return ErrorServerResponse.fromApiResponse(apiResponse);
+          return InternalServerError.fromServiceResponse(ServiceResponse);
       }
     } on FlutterError catch (flutterError) {
       // Maneja errores específicos de Flutter
