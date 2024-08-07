@@ -20,14 +20,19 @@ class _HomeState extends State<Home> {
 
   Color _nameBorderColor = Colors.grey;
   // Color _abbreviationBorderColor = Colors.grey;
+  bool _isSubmitting = false;
 
   Future<void> _handleSubmit() async {
+    setState(() {
+      _isSubmitting = true; // Bloquea el botón
+    });
+
     try {
       var response = await CountryCommandCreate(CountryCreate())
           .execute(_name.text, _abbreviation.text, _dialingCode.text);
 
-    if (response is ValidationResponse) {
-          var names = response.validation()[0];
+      if (response is ValidationResponse) {
+        var names = response.validation()[0];
 
         if (names.contains('name')) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,10 +64,11 @@ class _HomeState extends State<Home> {
           context: context,
           builder: (context) => PopupWindow(
             title: response is SuccessResponse ? 'Success' : 'Error',
-            message
-            : response is SuccessResponse ? response.message
-            : response is SimpleErrorResponse ? response.message
-            : response.title,
+            message: response is SuccessResponse
+                ? response.message
+                : response is SimpleErrorResponse
+                    ? response.message
+                    : response.title,
           ),
         );
       }
@@ -75,12 +81,15 @@ class _HomeState extends State<Home> {
         ),
       );
     } finally {
+      setState(() {
+        _isSubmitting = false; // Habilita el botón
+      });
+
       _name.clear();
       _abbreviation.clear();
       _dialingCode.clear();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +117,8 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _handleSubmit,
-              child: Text('Submit'),
+              onPressed: _isSubmitting ? null : _handleSubmit,
+              child: Text(_isSubmitting ? 'Submit' : 'Submit'),
             ),
           ],
         ),
