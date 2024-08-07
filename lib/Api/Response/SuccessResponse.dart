@@ -13,7 +13,6 @@ class SuccessResponse {
   });
 
   factory SuccessResponse.fromServiceResponse(ServiceResponse ServiceResponse) {
-    // Obtén el cuerpo de la respuesta y asegúrate de que no sea nulo
     return SuccessResponse(
       body: ServiceResponse.body,
       statusCode: ServiceResponse.statusCode,
@@ -21,13 +20,11 @@ class SuccessResponse {
   }
 
   String get message {
-    // Verifica si 'message' está presente en el cuerpo de la respuesta
     return body['message'] as String;
   }
 
   @override
   String toString() {
-    // Asegúrate de que statusCode y message estén presentes
     return 'Status Code: $statusCode, Message: $message';
   }
 }

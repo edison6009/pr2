@@ -1,22 +1,86 @@
-//Flutter native support
 import 'package:flutter/material.dart';
-import 'Countries.dart'; // Importa la nueva vista
-//Api support
 import 'package:pr2/Api/Command/CountryCommand.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
 import 'package:pr2/Api/Response/ServiceResponse.dart';
 import 'package:pr2/Api/Response/SuccessResponse.dart';
 import 'package:pr2/Api/Response/InternalServerError.dart';
-//App suporrt
+import 'package:pr2/Api/Response/ErrorResponse.dart';
 import 'package:pr2/App/Widget/PopupWindow.dart';
-import 'package:pr2/App/Widget/CustomForm.dart';
+import 'package:pr2/App/Widget/CustomInput.dart';
 
-/// Clase para la vista principal llamada Home que contiene el formulario personalizado.
-class Home extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController abbreviationController = TextEditingController();
-  final TextEditingController dialingCodeController = TextEditingController();
-    final TextEditingController asdasdadsads = TextEditingController();
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _abbreviation = TextEditingController();
+  final TextEditingController _dialingCode = TextEditingController();
+
+  Color _nameBorderColor = Colors.grey;
+  // Color _abbreviationBorderColor = Colors.grey;
+
+  Future<void> _handleSubmit() async {
+    try {
+      var response = await CountryCommandCreate(CountryCreate())
+          .execute(_name.text, _abbreviation.text, _dialingCode.text);
+
+    if (response is ValidationResponse) {
+          var names = response.validation()[0];
+
+        if (names.contains('name')) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _nameBorderColor = Colors.red;
+            });
+            Future.delayed(Duration(seconds: 2), () {
+              setState(() {
+                _nameBorderColor = Colors.grey;
+              });
+            });
+          });
+        }
+
+        // if (names.contains('abbreviation')) {
+        //   WidgetsBinding.instance.addPostFrameCallback((_) {
+        //     setState(() {
+        //       _abbreviationBorderColor = Colors.red;
+        //     });
+        //     Future.delayed(Duration(seconds: 2), () {
+        //       setState(() {
+        //         _abbreviationBorderColor = Colors.grey;
+        //       });
+        //     });
+        //   });
+        // }
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: response is SuccessResponse ? 'Success' : 'Error',
+            message
+            : response is SuccessResponse ? response.message
+            : response is SimpleErrorResponse ? response.message
+            : response.title,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } finally {
+      _name.clear();
+      _abbreviation.clear();
+      _dialingCode.clear();
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,65 +88,30 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: Text('Home')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: CustomForm(
-          controllers: [
-            nameController,
-            abbreviationController,
-            dialingCodeController,
+        child: Column(
+          children: [
+            CustomInput(
+              hintText: 'Name',
+              controller: _name,
+              borderColor: _nameBorderColor,
+            ),
+            SizedBox(height: 16.0),
+            CustomInput(
+              hintText: 'Abbreviation',
+              controller: _abbreviation,
+              // borderColor: _abbreviationBorderColor,
+            ),
+            SizedBox(height: 16.0),
+            CustomInput(
+              hintText: 'Dialing Code',
+              controller: _dialingCode,
+            ),
+            SizedBox(height: 32.0),
+            ElevatedButton(
+              onPressed: _handleSubmit,
+              child: Text('Submit'),
+            ),
           ],
-          fieldLabels: [
-            'Name',
-            'Abbreviation',
-            'Dialing Code',
-          ],
-          buttonLabel: 'Submit',
-          onButtonPressed: () async {
-            // Crear una instancia de CountryCreate
-            var countryCreateService = CountryCreate();
-
-            // Crear una instancia de CountryCommandCreate
-            var commandCreate = CountryCommandCreate(countryCreateService);
-
-            // Obtener valores de los campos de texto
-            String name = nameController.text;
-            String abbreviation = abbreviationController.text;
-            String dialingCode = dialingCodeController.text;
-
-            // Llamar a execute con los valores de los campos
-            var response =
-                await commandCreate.execute(name, abbreviation, dialingCode);
-
-            // Mostrar el PopupWindow con el resultado
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                if (response is SuccessResponse) {
-                  // Manejar la respuesta exitosa
-                  return PopupWindow(
-                    title: 'Success',
-                    message: response.message, // Mensaje del cuerpo
-                  );
-                } else if (response is InternalServerError) {
-                  // Manejar el error
-                  return PopupWindow(
-                    title: 'Error',
-                    message: response.title, // Mostrar el error
-                  );
-                } else {
-                  // Manejo de casos imprevistos
-                  return PopupWindow(
-                    title: 'Error',
-                    message: 'Se produjo un error inesperado.',
-                  );
-                }
-              },
-            );
-
-            // Limpiar los campos de texto después de enviar
-            nameController.clear();
-            abbreviationController.clear();
-            dialingCodeController.clear();
-          },
         ),
       ),
     );
