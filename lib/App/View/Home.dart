@@ -18,8 +18,9 @@ class _HomeState extends State<Home> {
   final TextEditingController _abbreviation = TextEditingController();
   final TextEditingController _dialingCode = TextEditingController();
 
-  Color _nameBorderColor = Colors.grey;
+  Color _nameColor = Colors.grey;
   // Color _abbreviationBorderColor = Colors.grey;
+
   bool _isSubmitting = false;
 
   Future<void> _handleSubmit() async {
@@ -32,22 +33,22 @@ class _HomeState extends State<Home> {
           .execute(_name.text, _abbreviation.text, _dialingCode.text);
 
       if (response is ValidationResponse) {
-        var names = response.validation()[0];
 
-        if (names.contains('name')) {
+        if (response.key['name'] != null) {
+          print(response.message('name'));
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
-              _nameBorderColor = Colors.red;
+              _nameColor = Colors.red;
             });
             Future.delayed(Duration(seconds: 2), () {
               setState(() {
-                _nameBorderColor = Colors.grey;
+                _nameColor = Colors.grey;
               });
             });
           });
         }
 
-        // if (names.contains('abbreviation')) {
+        // if (response.key['abbreviation']) {
         //   WidgetsBinding.instance.addPostFrameCallback((_) {
         //     setState(() {
         //       _abbreviationBorderColor = Colors.red;
@@ -63,12 +64,11 @@ class _HomeState extends State<Home> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is SuccessResponse ? 'Success' : 'Error',
-            message: response is SuccessResponse
-                ? response.message
-                : response is SimpleErrorResponse
-                    ? response.message
-                    : response.title,
+            title: response is SuccessResponse  ? 'Success' 
+                                                : 'Error',
+            message : response is SuccessResponse ? response.message
+                    : response is SimpleErrorResponse ? response.message
+                    : response.message,
           ),
         );
       }
@@ -102,7 +102,7 @@ class _HomeState extends State<Home> {
             CustomInput(
               hintText: 'Name',
               controller: _name,
-              borderColor: _nameBorderColor,
+              borderColor: _nameColor,
             ),
             SizedBox(height: 16.0),
             CustomInput(

@@ -17,49 +17,47 @@ class SimpleErrorResponse {
     );
   }
 
-  String get message {
-    return body['validation'] as String;
+String get message {
+    if (body.containsKey('validation')) {
+      return body['validation'] as String;
+    }
+    return body['error'] as String; // O lanza un error si la clave debe existir
   }
 
   @override
   String toString() {
-    return 'Status Code: $statusCode, Message: $message';
+    return 'StatusCode: $statusCode, Message: $message';
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class ValidationResponse {
-  final List<String> fieldNames;
-  final List<String> messages;
+  final Map<String, String> key;
 
-  ValidationResponse({
-    required this.fieldNames,
-    required this.messages,
-  });
+  ValidationResponse({required this.key});
 
-  factory ValidationResponse.fromServiceResponse(ServiceResponse serviceResponse) {
+  factory ValidationResponse.fromServiceResponse(
+      ServiceResponse serviceResponse) {
     final validationData = serviceResponse.body['validation'];
-
-    List<String> names = [];
-    List<String> msgs = [];
+    final Map<String, String> errors = {};
 
     if (validationData is Map<String, dynamic>) {
-      validationData.forEach((fieldName, errors) {
-        names.add(fieldName);
-        msgs.addAll(List<String>.from(errors));
+      validationData.forEach((fieldName, messages) {
+        if (messages is List) {
+          errors[fieldName] = messages.isNotEmpty ? messages[0] : '';
+        }
       });
     }
 
-    return ValidationResponse(
-      fieldNames: names,
-      messages: msgs,
-    );
+    return ValidationResponse(key: errors);
   }
 
-  List<List<String>> validation() {
-    return [fieldNames, messages];
+  String? message(String fieldName) {
+    return key[fieldName];
   }
 }
+
+
 
 

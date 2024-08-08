@@ -25,6 +25,6 @@ class SuccessResponse {
 
   @override
   String toString() {
-    return 'Status Code: $statusCode, Message: $message';
+    return 'StatusCode: $statusCode, Message: $message';
   }
 }

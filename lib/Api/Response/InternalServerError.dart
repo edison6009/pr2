@@ -25,10 +25,10 @@ class InternalServerError {
   }
 
   // Getter 'message' que retorna el primer título
-  String get title => error[0];
+  String get message => error[0];
 
   @override
   String toString() {
-    return 'Status Code: $code, Title: $title, Errors: $errors';
+    return 'Status Code: $code, Message: $message, Errors: $errors';
   }
 }

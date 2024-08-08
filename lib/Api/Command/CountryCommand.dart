@@ -16,15 +16,13 @@ class CountryCommandIndex {
   Future<dynamic> execute() async {
     try {
       var ServiceResponse = await _countryData.fetchData();
-
       if (ServiceResponse.statusCode == 200) {
         return CountryModel.fromJson(ServiceResponse.body);
       } else {
         return InternalServerError.fromServiceResponse(ServiceResponse);
       }
     } on FlutterError catch (flutterError) {
-      // Maneja errores específicos de Flutter
-      throw Exception(
+        throw Exception(
           'Error en la aplicación Flutter: ${flutterError.message}');
     }
   }
@@ -40,22 +38,20 @@ class CountryCommandCreate {
     try {
       var ServiceResponse = await _countryCreateService.createCountry(
           name, abbreviation, dialing_code);
-
       if (ServiceResponse.statusCode == 201) {
           return SuccessResponse.fromServiceResponse(ServiceResponse);
-      } else if (ServiceResponse.statusCode == 400) {
-        final validationContent = ServiceResponse.body['validation'];
-
-        if (validationContent is String) {
+      } else if (ServiceResponse.statusCode == 500) {
+          return InternalServerError.fromServiceResponse(ServiceResponse);
+      } else {
+          var content = ServiceResponse.body['validation'] ?? ServiceResponse.body['error'];
+        if (content is String) {
           return SimpleErrorResponse.fromServiceResponse(ServiceResponse);
         }
-          return ValidationResponse.fromServiceResponse(ServiceResponse);
-      } else {
-          return InternalServerError.fromServiceResponse(ServiceResponse);
+        return ValidationResponse.fromServiceResponse(ServiceResponse);         
       }
     } on FlutterError catch (flutterError) {
       throw Exception(
-          'Error en la aplicación Flutter: ${flutterError.message}');
+        'Error en la aplicación Flutter: ${flutterError.message}');
     }
   }
 }
