@@ -18,14 +18,14 @@ class _HomeState extends State<Home> {
   final TextEditingController _abbreviation = TextEditingController();
   final TextEditingController _dialingCode = TextEditingController();
 
-  Color _nameColor = Colors.grey;
-  // Color _abbreviationBorderColor = Colors.grey;
+  bool _submitting = false;
 
-  bool _isSubmitting = false;
+  Color _colorName = Colors.grey;
+  String? _errorName;
 
   Future<void> _handleSubmit() async {
     setState(() {
-      _isSubmitting = true; // Bloquea el botón
+      _submitting = true;
     });
 
     try {
@@ -33,41 +33,28 @@ class _HomeState extends State<Home> {
           .execute(_name.text, _abbreviation.text, _dialingCode.text);
 
       if (response is ValidationResponse) {
-
         if (response.key['name'] != null) {
-          print(response.message('name'));
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            _colorName = Colors.red;
+            _errorName = response.message('name');
+          });
+          Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _nameColor = Colors.red;
-            });
-            Future.delayed(Duration(seconds: 2), () {
-              setState(() {
-                _nameColor = Colors.grey;
-              });
+              _colorName = Colors.grey;
+              _errorName = null;
             });
           });
         }
 
-        // if (response.key['abbreviation']) {
-        //   WidgetsBinding.instance.addPostFrameCallback((_) {
-        //     setState(() {
-        //       _abbreviationBorderColor = Colors.red;
-        //     });
-        //     Future.delayed(Duration(seconds: 2), () {
-        //       setState(() {
-        //         _abbreviationBorderColor = Colors.grey;
-        //       });
-        //     });
-        //   });
-        // }
       } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is SuccessResponse  ? 'Success' 
-                                                : 'Error',
-            message : response is SuccessResponse ? response.message
-                    : response is SimpleErrorResponse ? response.message
+            title: response is SuccessResponse ? 'Success' : 'Error',
+            message: response is SuccessResponse
+                ? response.message
+                : response is SimpleErrorResponse
+                    ? response.message
                     : response.message,
           ),
         );
@@ -82,7 +69,7 @@ class _HomeState extends State<Home> {
       );
     } finally {
       setState(() {
-        _isSubmitting = false; // Habilita el botón
+        _submitting = false;
       });
 
       _name.clear();
@@ -102,13 +89,13 @@ class _HomeState extends State<Home> {
             CustomInput(
               hintText: 'Name',
               controller: _name,
-              borderColor: _nameColor,
+              borderColor: _colorName,
+              errorMessage: _errorName,
             ),
             SizedBox(height: 16.0),
             CustomInput(
               hintText: 'Abbreviation',
               controller: _abbreviation,
-              // borderColor: _abbreviationBorderColor,
             ),
             SizedBox(height: 16.0),
             CustomInput(
@@ -117,8 +104,8 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _isSubmitting ? null : _handleSubmit,
-              child: Text(_isSubmitting ? 'Submit' : 'Submit'),
+              onPressed: _submitting ? null : _handleSubmit,
+              child: Text(_submitting ? 'Submit' : 'Submit'),
             ),
           ],
         ),
@@ -126,3 +113,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
