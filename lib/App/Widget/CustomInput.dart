@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomInput extends StatelessWidget {
-  final String hintText;
-  final TextEditingController controller;
-  final Color borderColor;
-  final String? errorMessage; // Agrega esta línea
+  final String text;
+  final TextEditingController input;
+  final Color border;
+  final String? error;
 
   CustomInput({
-    required this.hintText,
-    required this.controller,
-    this.borderColor = Colors.grey, // Valor por defecto
-    this.errorMessage, // Agrega esta línea
+    required this.text,
+    required this.input,
+    this.border = Colors.grey,
+    this.error,
   });
 
   @override
@@ -19,22 +19,22 @@ class CustomInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
-          controller: controller,
+          controller: input,
           decoration: InputDecoration(
-            hintText: hintText,
+            hintText: text,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
+              borderSide: BorderSide(color: border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
+              borderSide: BorderSide(color: border),
             ),
           ),
         ),
-        if (errorMessage != null) // Muestra el mensaje si no es nulo
+        if (error != null)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              errorMessage!,
+              error!,
               style: TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
