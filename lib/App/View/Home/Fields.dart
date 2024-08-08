@@ -12,7 +12,7 @@ final border = {
   'dialing_code': Colors.grey
 };
 
-final Map<String, String?> errorMessages = {
+final Map<String, String?> messages = {
   'name': null,
   'abbreviation': null,
   'dialing_code': null,

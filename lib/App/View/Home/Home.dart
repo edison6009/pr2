@@ -35,12 +35,12 @@ class _HomeState extends State<Home> {
         if (response.key['name'] != null) {
           setState(() {
             border['name'] = Colors.red;
-            errorMessages['name'] = response.message('name');
+            messages['name'] = response.message('name');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
               border['name'] = Colors.grey;
-              errorMessages['name'] = null;
+              messages['name'] = null;
             });
           });
         }
@@ -48,12 +48,12 @@ class _HomeState extends State<Home> {
         if (response.key['abbreviation'] != null) {
           setState(() {
             border['abbreviation'] = Colors.red;
-            errorMessages['abbreviation'] = response.message('abbreviation');
+            messages['abbreviation'] = response.message('abbreviation');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
               border['abbreviation'] = Colors.grey;
-              errorMessages['abbreviation'] = null;
+              messages['abbreviation'] = null;
             });
           });
         }
@@ -61,12 +61,12 @@ class _HomeState extends State<Home> {
         if (response.key['dialing_code'] != null) {
           setState(() {
             border['dialing_code'] = Colors.red;
-            errorMessages['dialing_code'] = response.message('dialing_code');
+            messages['dialing_code'] = response.message('dialing_code');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
               border['dialing_code'] = Colors.grey;
-              errorMessages['dialing_code'] = null;
+              messages['dialing_code'] = null;
             });
           });
         }
@@ -110,21 +110,21 @@ class _HomeState extends State<Home> {
               text: 'Name',
               input: input['name']!,
               border: border['name']!,
-              error: errorMessages['name'],
+              error: messages['name'],
             ),
             SizedBox(height: 16.0),
             CustomInput(
               text: 'Abbreviation',
               input: input['abbreviation']!,
               border: border['abbreviation']!,
-              error: errorMessages['abbreviation'],
+              error: messages['abbreviation'],
             ),
             SizedBox(height: 16.0),
             CustomInput(
               text: 'Dialing Code',
               input: input['dialingCode']!,
               border: border['dialing_code']!,
-              error: errorMessages['dialing_code'],
+              error: messages['dialing_code'],
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
