@@ -1,4 +1,3 @@
-//Flutter native support
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -12,12 +11,14 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue, // Antes era 'primary'
-        foregroundColor: Colors.white, // Antes era 'onPrimary'
+        backgroundColor: Colors.blue, // Color de fondo azul
+        foregroundColor: Colors.white, // Color del texto blanco
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0), // Bordes redondeados
+        ),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
       child: Text(label),
     );
   }
 }
-

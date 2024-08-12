@@ -7,14 +7,15 @@ import 'package:pr2/Api/Response/InternalServerError.dart';
 import 'package:pr2/Api/Response/ErrorResponse.dart';
 import 'package:pr2/App/Widget/PopupWindow.dart';
 import 'package:pr2/App/Widget/CustomInput.dart';
+import 'package:pr2/App/Widget/CustomButton.dart'; // Asegúrate de que esté correctamente importado
 import 'Fields.dart';
 
-class Home extends StatefulWidget {
+class Post extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _PostState createState() => _PostState();
 }
 
-class _HomeState extends State<Home> {
+class _PostState extends State<Post> {
   bool _submitting = false;
 
   Future<void> _call() async {
@@ -23,15 +24,13 @@ class _HomeState extends State<Home> {
     });
 
     try {
-      var response = await CountryCommandCreate(CountryCreate()).execute
-      (
+      var response = await CountryCommandCreate(CountryCreate()).execute(
         input['name']!.text,
         input['abbreviation']!.text,
         input['dialingCode']!.text,
       );
 
       if (response is ValidationResponse) {
-
         if (response.key['name'] != null) {
           setState(() {
             border['name'] = Colors.red;
@@ -74,10 +73,8 @@ class _HomeState extends State<Home> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is SuccessResponse 
-                 ? 'Success' 
-                 : 'Error',
-          message: response.message,
+            title: response is SuccessResponse ? 'Success' : 'Error',
+            message: response.message,
           ),
         );
       }
@@ -101,7 +98,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(title: Text('Post')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -127,9 +124,9 @@ class _HomeState extends State<Home> {
               error: messages['dialing_code'],
             ),
             SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: _submitting ? null : _call,
-              child: Text(_submitting ? 'Submit' : 'Submit'),
+            CustomButton(
+              label: 'Submit',
+              onPressed: _call,
             ),
           ],
         ),
