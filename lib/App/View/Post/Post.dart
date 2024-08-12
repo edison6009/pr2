@@ -31,6 +31,7 @@ class _PostState extends State<Post> {
       );
 
       if (response is ValidationResponse) {
+
         if (response.key['name'] != null) {
           setState(() {
             border['name'] = Colors.red;
@@ -69,6 +70,7 @@ class _PostState extends State<Post> {
             });
           });
         }
+        
       } else {
         showDialog(
           context: context,
