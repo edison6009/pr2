@@ -10,20 +10,21 @@ import 'package:pr2/Api/Response/ErrorResponse.dart';
 
 class CountryCommandIndex {
   final CountryIndex _countryData;
+  final Map<String, String?>? filters;
 
-  CountryCommandIndex(this._countryData);
+  CountryCommandIndex(this._countryData, [this.filters]);
 
   Future<dynamic> execute() async {
     try {
-      var ServiceResponse = await _countryData.fetchData();
-      if (ServiceResponse.statusCode == 200) {
-        return CountryModel.fromJson(ServiceResponse.body);
+      var serviceResponse = await _countryData.fetchData(filters ?? {});
+
+      if (serviceResponse.statusCode == 200) {
+        return CountryModel.fromJson(serviceResponse.body);
       } else {
-        return InternalServerError.fromServiceResponse(ServiceResponse);
+        return InternalServerError.fromServiceResponse(serviceResponse);
       }
-    } on FlutterError catch (flutterError) {
-        throw Exception(
-          'Error en la aplicación Flutter: ${flutterError.message}');
+    } catch (e) {
+      throw Exception('Error: ${e.toString()}');
     }
   }
 }

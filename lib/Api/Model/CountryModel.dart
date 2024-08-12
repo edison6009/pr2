@@ -10,13 +10,41 @@ CountryModel countryModelFromJson(String str) =>
 String countryModelToJson(CountryModel data) => json.encode(data.toJson());
 
 class CountryModel {
-  final List<Country> countries;
+  final int count;
+  final dynamic next;
+  final dynamic previous;
+  final Results results;
 
   CountryModel({
-    required this.countries,
+    required this.count,
+    required this.next,
+    required this.previous,
+    required this.results,
   });
 
   factory CountryModel.fromJson(Map<String, dynamic> json) => CountryModel(
+        count: json["count"],
+        next: json["next"],
+        previous: json["previous"],
+        results: Results.fromJson(json["results"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "count": count,
+        "next": next,
+        "previous": previous,
+        "results": results.toJson(),
+      };
+}
+
+class Results {
+  final List<Country> countries;
+
+  Results({
+    required this.countries,
+  });
+
+  factory Results.fromJson(Map<String, dynamic> json) => Results(
         countries: List<Country>.from(
             json["countries"].map((x) => Country.fromJson(x))),
       );
