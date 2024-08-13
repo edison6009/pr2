@@ -6,6 +6,7 @@ import 'package:pr2/App/Widget/CustomButton.dart';
 import 'package:pr2/App/Widget/CountryListView.dart';
 import 'package:pr2/App/Widget/PopupWindow.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
+import 'package:pr2/Api/Response/ErrorResponse.dart';
 
 class Index extends StatefulWidget {
   final String? name_;
@@ -54,8 +55,10 @@ class _IndexState extends State<Index> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: response.message,
+            title: response is InternalServerError
+                ? 'Error'
+                : 'Error de Conexión',
+          message: response.message,
           ),
         );
       }
