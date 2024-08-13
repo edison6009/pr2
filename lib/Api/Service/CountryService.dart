@@ -4,10 +4,24 @@ import 'package:pr2/Constants/Constants.dart';
 import 'dart:convert';
 
 class CountryIndex {
-  Future<ServiceResponse> fetchData() async {
-    var response = await http.get(Uri.parse('${ApiUrl.baseUrl}country/'));
+  Future<ServiceResponse> fetchData(Map<String, String?> filters) async {
+    // Asume que ApiUrl.baseUrl está definido en alguna parte
+    var uri = Uri.parse('${ApiUrl.baseUrl}country/');
 
-    // Crea ServiceResponse directamente al decodificar la respuesta
+    if (filters.isNotEmpty) {
+      // Agrega los filtros a la URL si existen
+      final queryString = filters.entries
+          .where((entry) => entry.value != null && entry.value!.isNotEmpty)
+          .map((entry) => '${entry.key}${entry.value}')
+          .join('&');
+
+      if (queryString.isNotEmpty) {
+        uri = uri.replace(query: queryString);
+      }
+    }
+
+    var response = await http.get(uri);
+
     return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
       response.statusCode,

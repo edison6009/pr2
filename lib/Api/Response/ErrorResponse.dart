@@ -1,6 +1,19 @@
 //Flutter native support
 import 'package:pr2/Api/Response/ServiceResponse.dart';
 
+class ApiError {
+  final String message;
+
+  ApiError() : message = 'Sin conexión a la API';
+
+  @override
+  String toString() {
+    return 'Message: $message';
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class SimpleErrorResponse {
   final Map<String, dynamic> body;
   final int statusCode;
