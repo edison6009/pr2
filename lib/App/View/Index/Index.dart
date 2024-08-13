@@ -1,13 +1,15 @@
-// lib/App/View/Index.dart
 import 'package:flutter/material.dart';
 import 'package:pr2/Api/Model/CountryModel.dart';
 import 'package:pr2/Api/Command/CountryCommand.dart';
-import 'package:pr2/Api/Service/CountryService.dart';
+import 'package:pr2/Api/Response/InternalServerError.dart';
 import 'package:pr2/App/Widget/CustomButton.dart';
-import 'package:pr2/App/Widget/CountryListView.dart'; // Importa el nuevo widget
+import 'package:pr2/App/Widget/CountryListView.dart';
+import 'package:pr2/App/Widget/PopupWindow.dart';
+import 'package:pr2/Api/Service/CountryService.dart';
 
 class Index extends StatefulWidget {
   final String? name_;
+  int page = 1;
 
   Index({this.name_});
 
@@ -17,70 +19,97 @@ class Index extends StatefulWidget {
 
 class _IndexState extends State<Index> {
   final filters = {
-    'pag=': '15', // Cambiado a String
+    'pag=': '10',
     'page=': null,
     'name=': null,
   };
 
-  List<Country> countries = []; // Variable de estado para almacenar los países
+  List<Country> countries = [];
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMorePages = true;
 
   Future<void> fetchCountries() async {
-    if (widget.name_ != null && widget.name_!.isNotEmpty) {
+    if (_isLoading || !_hasMorePages) return;
+
+    _isLoading = true;
+
+    if (widget.name_?.isNotEmpty ?? false) {
       filters['name='] = widget.name_;
-    } else {
-      filters['name='] =
-          null; // Asegúrate de que se elimine el filtro si el nombre es nulo
     }
 
-    final countryIndex = CountryIndex();
-    final countryCommand = CountryCommandIndex(countryIndex, filters);
+    filters['page='] = widget.page.toString();
+
+    final countryCommand = CountryCommandIndex(CountryIndex(), filters);
 
     try {
-      // Ejecuta el comando y obtiene la respuesta
       var response = await countryCommand.execute();
 
-      setState(() {
-        countries = response.results.countries; // Actualiza la lista de países
-      });
+      if (response is CountryModel) {
+        setState(() {
+          countries.addAll(response.results.countries);
+          _hasMorePages = response.next != null;
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      }
     } catch (e) {
-      // Maneja y muestra cualquier error que ocurra
       print('Error: $e');
+    } finally {
+      _isLoading = false;
     }
   }
 
   void reloadView() {
+    setState(() {
+      widget.page = 1;
+      countries.clear();
+      _hasMorePages = true;
+    });
     fetchCountries();
   }
 
   @override
   void initState() {
     super.initState();
-    fetchCountries(); // Llama a fetchCountries en lugar de initialize
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          setState(() {
+            widget.page++;
+            fetchCountries();
+          });
+        }
+      });
+    fetchCountries();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Index'),
-      ),
+      appBar: AppBar(title: Text('Index')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Hola Mundo',
-              style: TextStyle(fontSize: 24),
-            ),
             SizedBox(height: 20),
-            CustomButton(
-              label: 'Recargar Vista',
-              onPressed:
-                  reloadView, // Pasa la referencia a la función que recarga la vista
-            ),
+            CustomButton(label: 'Recargar Vista', onPressed: reloadView),
             SizedBox(height: 20),
-            // Llama al widget CountryListView y pasa los datos de los países
-            CountryListView(countries: countries),
+            CountryListView(
+                countries: countries, scrollController: _scrollController),
           ],
         ),
       ),

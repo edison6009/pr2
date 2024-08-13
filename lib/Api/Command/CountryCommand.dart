@@ -1,5 +1,7 @@
 //Flutter native support
 import 'package:flutter/material.dart';
+import 'dart:io';
+
 //Api support
 import 'package:pr2/Api/Model/CountryModel.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
@@ -23,8 +25,11 @@ class CountryCommandIndex {
       } else {
         return InternalServerError.fromServiceResponse(serviceResponse);
       }
-    } catch (e) {
-      throw Exception('Error: ${e.toString()}');
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
     }
   }
 }
@@ -50,6 +55,8 @@ class CountryCommandCreate {
         }
         return ValidationResponse.fromServiceResponse(ServiceResponse);         
       }
+    } on SocketException catch (e) {
+        return ApiError();
     } on FlutterError catch (flutterError) {
       throw Exception(
         'Error en la aplicación Flutter: ${flutterError.message}');

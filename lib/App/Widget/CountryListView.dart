@@ -4,39 +4,20 @@ import 'package:pr2/Api/Model/CountryModel.dart';
 
 class CountryListView extends StatefulWidget {
   final List<Country> countries;
+  final ScrollController scrollController; // Recibe el controlador de scroll
 
-  CountryListView({required this.countries});
+  CountryListView({required this.countries, required this.scrollController});
 
   @override
   _CountryListViewState createState() => _CountryListViewState();
 }
 
 class _CountryListViewState extends State<CountryListView> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          print('Llegaste al final');
-        }
-      });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-        controller: _scrollController,
+        controller: widget.scrollController, // Usa el controlador recibido
         itemCount: widget.countries.length,
         itemBuilder: (context, index) {
           final country = widget.countries[index];
