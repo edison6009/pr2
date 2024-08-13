@@ -63,7 +63,13 @@ class _IndexState extends State<Index> {
         );
       }
     } catch (e) {
-      print('Error: $e');
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
     } finally {
       _isLoading = false;
     }

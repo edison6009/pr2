@@ -26,7 +26,7 @@ class CountryCommandIndex {
         return InternalServerError.fromServiceResponse(serviceResponse);
       }
     } on SocketException catch (e) {
-      return ApiError();
+      return ApiError(); 
     } on FlutterError catch (flutterError) {
       throw Exception(
           'Error en la aplicación Flutter: ${flutterError.message}');
