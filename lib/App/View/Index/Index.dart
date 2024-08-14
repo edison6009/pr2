@@ -9,10 +9,11 @@ import 'package:pr2/Api/Service/CountryService.dart';
 import 'package:pr2/Api/Response/ErrorResponse.dart';
 
 class Index extends StatefulWidget {
-  final String? name_;
+  String? name_;
   int page = 1;
+  VoidCallback? onFetchCountries;
 
-  Index({this.name_});
+  Index({this.name_, this.onFetchCountries});
 
   @override
   _IndexState createState() => _IndexState();
@@ -46,32 +47,41 @@ class _IndexState extends State<Index> {
     try {
       var response = await countryCommand.execute();
 
-      if (response is CountryModel) {
-        setState(() {
-          countries.addAll(response.results.countries);
-          _hasMorePages = response.next != null;
-        });
-      } else {
+      if (mounted) {
+        // Verificar si el widget aún está montado
+        if (response is CountryModel) {
+          setState(() {
+            countries.addAll(response.results.countries);
+            _hasMorePages = response.next != null;
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is InternalServerError
-                ? 'Error'
-                : 'Error de Conexión',
-          message: response.message,
+            title: 'Error',
+            message: e.toString(),
           ),
         );
       }
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
     } finally {
-      _isLoading = false;
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
