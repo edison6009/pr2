@@ -4,7 +4,7 @@ import 'package:pr2/Api/Model/CountryModel.dart';
 
 class CountryListView extends StatefulWidget {
   final List<Country> countries;
-  final ScrollController scrollController; // Recibe el controlador de scroll
+  final ScrollController scrollController;
 
   CountryListView({required this.countries, required this.scrollController});
 

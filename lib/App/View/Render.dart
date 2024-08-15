@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr2/App/Widget/CustomButton.dart'; // Asegúrate de importar correctamente el archivo donde está tu widget CustomButton
 import 'package:pr2/app/view/Post/Post.dart';
 import 'package:pr2/app/view/Index/Index.dart';
-import 'package:pr2/app/View/Search.dart';
+import 'package:pr2/app/View/Search/Search.dart';
 
 class Render extends StatefulWidget {
   @override
