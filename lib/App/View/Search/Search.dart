@@ -42,8 +42,7 @@ class _SearchState extends State<Search> {
             ),
             Expanded(
               child: FutureBuilder(
-                future:
-                    _fetchCountries(), // Llama a la función que crea el widget Index
+                future: _fetchCountries(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -62,9 +61,15 @@ class _SearchState extends State<Search> {
   }
 
   Future<Widget> _fetchCountries() async {
+    // Verifica si el texto de búsqueda está vacío
+    if (_searchText.isEmpty) {
+      // Retorna un widget vacío o un mensaje cuando el input está vacío
+      return Center(child: Text(''));
+    }
     // Retorna el widget Index con el texto actual de búsqueda
     return Index(
       name_: _searchText,
     );
   }
 }
+
