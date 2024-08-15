@@ -47,6 +47,8 @@ class _IndexState extends State<Index> {
     try {
       var response = await countryCommand.execute();
 
+      if (mounted) {
+        // Verificar si el widget aún está montado
         if (response is CountryModel) {
           setState(() {
             countries.addAll(response.results.countries);
@@ -63,7 +65,9 @@ class _IndexState extends State<Index> {
             ),
           );
         }
+      }
     } catch (e) {
+      if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -71,13 +75,15 @@ class _IndexState extends State<Index> {
             message: e.toString(),
           ),
         );
-
+      }
     } finally {
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
       }
     }
+  }
 
   void reloadView() {
     setState(() {
