@@ -1,18 +1,18 @@
-// lib/App/Widget/CountryListView.dart
+// lib/App/Widget/CountriesListView.dart
 import 'package:flutter/material.dart';
-import 'package:pr2/Api/Model/CountryModel.dart';
+import 'package:pr2/Api/Model/CountryModels.dart';
 
-class CountryListView extends StatefulWidget {
+class CountriesListView extends StatefulWidget {
   final List<Country> countries;
   final ScrollController scrollController;
 
-  CountryListView({required this.countries, required this.scrollController});
+  CountriesListView({required this.countries, required this.scrollController});
 
   @override
-  _CountryListViewState createState() => _CountryListViewState();
+  _CountriesListViewState createState() => _CountriesListViewState();
 }
 
-class _CountryListViewState extends State<CountryListView> {
+class _CountriesListViewState extends State<CountriesListView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(

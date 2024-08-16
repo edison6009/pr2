@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pr2/App/Widget/CustomButton.dart'; // Asegúrate de importar correctamente el archivo donde está tu widget CustomButton
+import 'package:pr2/App/View/Show/Show.dart';
+import 'package:pr2/App/Widget/CustomButton.dart';
 import 'package:pr2/app/view/Post/Post.dart';
 import 'package:pr2/app/view/Index/Index.dart';
 import 'package:pr2/app/View/Search/Search.dart';
@@ -50,8 +51,13 @@ class _RenderState extends State<Render> {
             ),
             SizedBox(height: 16.0),
             CustomButton(
-              label: 'Button 4',
-              onPressed: () {}, // onPressed vacío por ahora
+              label: 'Show',
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Show(id: 3)),
+                );
+              }, // onPressed vacío por ahora
             ),
             SizedBox(height: 16.0),
             CustomButton(

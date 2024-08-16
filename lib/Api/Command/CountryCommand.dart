@@ -3,12 +3,38 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 //Api support
-import 'package:pr2/Api/Model/CountryModel.dart';
+import 'package:pr2/Api/Model/CountryModels.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
 import 'package:pr2/Api/Response/ServiceResponse.dart';
 import 'package:pr2/Api/Response/SuccessResponse.dart';
 import 'package:pr2/Api/Response/InternalServerError.dart';
 import 'package:pr2/Api/Response/ErrorResponse.dart';
+
+class CountryCommandShow {
+  final CountryShow _countryShowService;
+  final int id;
+
+  CountryCommandShow(this._countryShowService, this.id);
+
+  Future<dynamic> execute() async {
+    try {
+      var serviceResponse = await _countryShowService.showCountry(id);
+
+      if (serviceResponse.statusCode == 200) {
+        return CountryModel.fromJson(serviceResponse.body);
+      } else if (serviceResponse.statusCode == 404) {
+        return SimpleErrorResponse.fromServiceResponse(serviceResponse);
+      } else {
+        return InternalServerError.fromServiceResponse(serviceResponse);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
 
 class CountryCommandIndex {
   final CountryIndex _countryData;
@@ -21,7 +47,7 @@ class CountryCommandIndex {
       var serviceResponse = await _countryData.fetchData(filters ?? {});
 
       if (serviceResponse.statusCode == 200) {
-        return CountryModel.fromJson(serviceResponse.body);
+        return CountriesModel.fromJson(serviceResponse.body);
       } else {
         return InternalServerError.fromServiceResponse(serviceResponse);
       }

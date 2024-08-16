@@ -1,28 +1,24 @@
-// To parse this JSON data, do
-//
-//     final countryModel = countryModelFromJson(jsonString);
-
 import 'dart:convert';
 
-CountryModel countryModelFromJson(String str) =>
-    CountryModel.fromJson(json.decode(str));
+CountriesModel countriesModelFromJson(String str) =>
+    CountriesModel.fromJson(json.decode(str));
 
-String countryModelToJson(CountryModel data) => json.encode(data.toJson());
+String countriesModelToJson(CountriesModel data) => json.encode(data.toJson());
 
-class CountryModel {
+class CountriesModel {
   final int count;
   final dynamic next;
   final dynamic previous;
   final Results results;
 
-  CountryModel({
+  CountriesModel({
     required this.count,
     required this.next,
     required this.previous,
     required this.results,
   });
 
-  factory CountryModel.fromJson(Map<String, dynamic> json) => CountryModel(
+  factory CountriesModel.fromJson(Map<String, dynamic> json) => CountriesModel(
         count: json["count"],
         next: json["next"],
         previous: json["previous"],
@@ -57,8 +53,8 @@ class Results {
 class Country {
   final int id;
   final String name;
-  final String abbreviation;
-  final String dialingCode;
+  final String? abbreviation;
+  final String? dialingCode;
   final DateTime createdAt;
   final DateTime updatedAt;
   final dynamic deletedAt;
@@ -93,3 +89,50 @@ class Country {
         "deleted_at": deletedAt,
       };
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CountryModel countryModelFromJson(String str) => CountryModel.fromJson(json.decode(str));
+
+String countryModelToJson(CountryModel data) => json.encode(data.toJson());
+
+class CountryModel {
+    final int id;
+    final String name;
+    final dynamic abbreviation;
+    final dynamic dialingCode;
+    final DateTime createdAt;
+    final DateTime updatedAt;
+    final dynamic deletedAt;
+
+    CountryModel({
+        required this.id,
+        required this.name,
+        required this.abbreviation,
+        required this.dialingCode,
+        required this.createdAt,
+        required this.updatedAt,
+        required this.deletedAt,
+    });
+
+    factory CountryModel.fromJson(Map<String, dynamic> json) => CountryModel(
+        id: json["id"],
+        name: json["name"],
+        abbreviation: json["abbreviation"],
+        dialingCode: json["dialing_code"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        deletedAt: json["deleted_at"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "abbreviation": abbreviation,
+        "dialing_code": dialingCode,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "deleted_at": deletedAt,
+    };
+}
+

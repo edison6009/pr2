@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:pr2/Api/Model/CountryModel.dart';
+import 'package:pr2/Api/Model/CountryModels.dart';
 import 'package:pr2/Api/Command/CountryCommand.dart';
 import 'package:pr2/Api/Response/InternalServerError.dart';
 import 'package:pr2/App/Widget/CustomButton.dart';
-import 'package:pr2/App/Widget/CountryListView.dart';
+import 'package:pr2/App/Widget/CountriesListView.dart';
 import 'package:pr2/App/Widget/PopupWindow.dart';
 import 'package:pr2/Api/Service/CountryService.dart';
 import 'package:pr2/Api/Response/ErrorResponse.dart';
 
 class Index extends StatefulWidget {
   String? name_;
-  int page = 1;
-  VoidCallback? onFetchCountries;
+  int page_ = 1;
 
-  Index({this.name_, this.onFetchCountries});
+  Index({this.name_});
 
   @override
   _IndexState createState() => _IndexState();
 }
 
 class _IndexState extends State<Index> {
+
+  List<Country> countries = [];
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMorePage_s = true;
+
   final filters = {
     'pag=': '10',
     'page=': null,
     'name=': null,
   };
 
-  List<Country> countries = [];
-  late ScrollController _scrollController;
-  bool _isLoading = false;
-  bool _hasMorePages = true;
-
-  Future<void> fetchCountries() async {
-    if (_isLoading || !_hasMorePages) return;
+  Future<void> _callCountries () async {
+    if (_isLoading || !_hasMorePage_s) return;
 
     _isLoading = true;
 
@@ -40,7 +40,7 @@ class _IndexState extends State<Index> {
       filters['name='] = widget.name_;
     }
 
-    filters['page='] = widget.page.toString();
+    filters['page='] = widget.page_.toString();
 
     final countryCommand = CountryCommandIndex(CountryIndex(), filters);
 
@@ -48,11 +48,10 @@ class _IndexState extends State<Index> {
       var response = await countryCommand.execute();
 
       if (mounted) {
-        // Verificar si el widget aún está montado
-        if (response is CountryModel) {
+        if (response is CountriesModel) {
           setState(() {
             countries.addAll(response.results.countries);
-            _hasMorePages = response.next != null;
+            _hasMorePage_s = response.next != null;
           });
         } else {
           showDialog(
@@ -87,11 +86,11 @@ class _IndexState extends State<Index> {
 
   void reloadView() {
     setState(() {
-      widget.page = 1;
+      widget.page_ = 1;
       countries.clear();
-      _hasMorePages = true;
+      _hasMorePage_s = true;
     });
-    fetchCountries();
+    _callCountries ();
   }
 
   @override
@@ -102,12 +101,12 @@ class _IndexState extends State<Index> {
         if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent) {
           setState(() {
-            widget.page++;
-            fetchCountries();
+            widget.page_++;
+            _callCountries ();
           });
         }
       });
-    fetchCountries();
+    _callCountries ();
   }
 
   @override
@@ -127,7 +126,7 @@ class _IndexState extends State<Index> {
             SizedBox(height: 20),
             CustomButton(label: 'Recargar Vista', onPressed: reloadView),
             SizedBox(height: 20),
-            CountryListView(
+            CountriesListView(
                 countries: countries, scrollController: _scrollController),
           ],
         ),

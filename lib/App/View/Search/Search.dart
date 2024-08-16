@@ -8,23 +8,23 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _search = TextEditingController();
   String _searchText = '';
 
   @override
   void initState() {
     super.initState();
 
-    _searchController.addListener(() {
+    _search.addListener(() {
       setState(() {
-        _searchText = _searchController.text;
+        _searchText = _search.text;
       });
     });
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -38,7 +38,7 @@ class _SearchState extends State<Search> {
           children: [
             CustomInput(
               text: 'Search',
-              input: _searchController,
+              input: _search,
             ),
             Expanded(
               child: FutureBuilder(
@@ -61,12 +61,9 @@ class _SearchState extends State<Search> {
   }
 
   Future<Widget> _fetchCountries() async {
-    // Verifica si el texto de búsqueda está vacío
     if (_searchText.isEmpty) {
-      // Retorna un widget vacío o un mensaje cuando el input está vacío
       return Center(child: Text(''));
     }
-    // Retorna el widget Index con el texto actual de búsqueda
     return Index(
       name_: _searchText,
     );

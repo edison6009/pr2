@@ -7,8 +7,7 @@ import 'package:pr2/Api/Response/InternalServerError.dart';
 import 'package:pr2/Api/Response/ErrorResponse.dart';
 import 'package:pr2/App/Widget/PopupWindow.dart';
 import 'package:pr2/App/Widget/CustomInput.dart';
-import 'package:pr2/App/Widget/CustomButton.dart'; // Asegúrate de que esté correctamente importado
-import 'Fields.dart';
+import 'package:pr2/App/Widget/CustomButton.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -16,9 +15,27 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  final input = {
+    'name': TextEditingController(),
+    'abbreviation': TextEditingController(),
+    'dialing_code': TextEditingController(),
+  };
+
+  final border = {
+    'name': Colors.grey,
+    'abbreviation': Colors.grey,
+    'dialing_code': Colors.grey
+  };
+
+  final Map<String, String?> messages = {
+    'name': null,
+    'abbreviation': null,
+    'dialing_code': null,
+  };
+
   bool _submitting = false;
 
-  Future<void> _call() async {
+  Future<void> _createCountry() async {
     setState(() {
       _submitting = true;
     });
@@ -27,7 +44,7 @@ class _PostState extends State<Post> {
       var response = await CountryCommandCreate(CountryCreate()).execute(
         input['name']!.text,
         input['abbreviation']!.text,
-        input['dialingCode']!.text,
+        input['dialing_code']!.text,
       );
 
       if (response is ValidationResponse) {
@@ -36,6 +53,7 @@ class _PostState extends State<Post> {
           setState(() {
             border['name'] = Colors.red;
             messages['name'] = response.message('name');
+            input['name']!.clear();
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
@@ -49,6 +67,7 @@ class _PostState extends State<Post> {
           setState(() {
             border['abbreviation'] = Colors.red;
             messages['abbreviation'] = response.message('abbreviation');
+            input['abbreviation']!.clear();
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
@@ -62,6 +81,7 @@ class _PostState extends State<Post> {
           setState(() {
             border['dialing_code'] = Colors.red;
             messages['dialing_code'] = response.message('dialing_code');
+            input['dialing_code']!.clear();
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
@@ -75,10 +95,13 @@ class _PostState extends State<Post> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is SuccessResponse ? 'Success' : 'Error',
+            title: response is SuccessResponse ? 'Success' 
+                 : response is InternalServerError ? 'Error' 
+                 : 'Error de Conexión',
             message: response.message,
           ),
         );
+        input.forEach((key, controller) => controller.clear());
       }
     } catch (e) {
       showDialog(
@@ -92,8 +115,6 @@ class _PostState extends State<Post> {
       setState(() {
         _submitting = false;
       });
-
-      input.forEach((key, controller) => controller.clear());
     }
   }
 
@@ -121,14 +142,14 @@ class _PostState extends State<Post> {
             SizedBox(height: 16.0),
             CustomInput(
               text: 'Dialing Code',
-              input: input['dialingCode']!,
+              input: input['dialing_code']!,
               border: border['dialing_code']!,
               error: messages['dialing_code'],
             ),
             SizedBox(height: 32.0),
             CustomButton(
               label: 'Submit',
-              onPressed: _call,
+              onPressed: _createCountry,
             ),
           ],
         ),
