@@ -4,6 +4,7 @@ import 'package:pr2/App/Widget/CustomButton.dart';
 import 'package:pr2/app/view/Post/Post.dart';
 import 'package:pr2/app/view/Index/Index.dart';
 import 'package:pr2/app/View/Search/Search.dart';
+import 'package:pr2/App/View/update/update.dart';
 
 class Render extends StatefulWidget {
   @override
@@ -62,7 +63,12 @@ class _RenderState extends State<Render> {
             SizedBox(height: 16.0),
             CustomButton(
               label: 'Button 5',
-              onPressed: () {}, // onPressed vacío por ahora
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Update(id: 3)),
+                );
+              }, // onPressed vacío por ahora
             ),
             SizedBox(height: 16.0),
             CustomButton(
