@@ -62,7 +62,7 @@ class _RenderState extends State<Render> {
             ),
             SizedBox(height: 16.0),
             CustomButton(
-              label: 'Button 5',
+              label: 'Update',
               onPressed: () {
                 Navigator.pushReplacement(
                   context,

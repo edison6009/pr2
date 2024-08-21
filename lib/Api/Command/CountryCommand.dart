@@ -90,6 +90,39 @@ class CountryCommandCreate {
   }
 }
 
+class CountryCommandUpdate {
+  final CountryUpdate _countryUpdateService;
+
+  CountryCommandUpdate(this._countryUpdateService);
+
+  Future<dynamic> execute(
+      String name, String abbreviation, String dialing_code, int id) async {
+    try {
+      var ServiceResponse = await _countryUpdateService.updateCountry(
+          name, abbreviation, dialing_code, id);
+
+      if (ServiceResponse.statusCode == 200) {
+        return SuccessResponse.fromServiceResponse(ServiceResponse);
+      } else if (ServiceResponse.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(ServiceResponse);
+      } else {
+        var content =
+            ServiceResponse.body['validation'] ?? ServiceResponse.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(ServiceResponse);
+        }
+        return ValidationResponse.fromServiceResponse(ServiceResponse);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
+
 
 
 

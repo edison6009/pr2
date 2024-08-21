@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CustomInput extends StatelessWidget {
-  final String text;
+  String? text;
   final TextEditingController input;
   final Color border;
   final String? error;
 
   CustomInput({
-    required this.text,
+    this.text,
     required this.input,
     this.border = Colors.grey,
     this.error,

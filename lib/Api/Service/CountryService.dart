@@ -67,5 +67,33 @@ class CountryCreate {
   }
 }
 
+class CountryUpdate{
+  Future<ServiceResponse> updateCountry(
+      String name, String abbreviation, String dialing_code, int id) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}country/update/$id/');
+
+    final body = jsonEncode({
+      'name': name,
+      'abbreviation': abbreviation,
+      'dialing_code': dialing_code,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
 
 
