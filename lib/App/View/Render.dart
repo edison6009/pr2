@@ -3,8 +3,8 @@ import 'package:pr2/App/View/Show/Show.dart';
 import 'package:pr2/App/Widget/CustomButton.dart';
 import 'package:pr2/app/view/Post/Post.dart';
 import 'package:pr2/app/view/Index/Index.dart';
-import 'package:pr2/app/View/Search/Search.dart';
-import 'package:pr2/App/View/update/update.dart';
+import 'package:pr2/app/view/Search/Search.dart';
+import 'package:pr2/App/View/Update/Update.dart';
 
 class Render extends StatefulWidget {
   @override
@@ -66,7 +66,7 @@ class _RenderState extends State<Render> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Update(id: 3)),
+                  MaterialPageRoute(builder: (context) => Update(id: 1)),
                 );
               }, // onPressed vacío por ahora
             ),

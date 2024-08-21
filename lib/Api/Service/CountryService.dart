@@ -73,9 +73,9 @@ class CountryUpdate{
     final url = Uri.parse('${ApiUrl.baseUrl}country/update/$id/');
 
     final body = jsonEncode({
-      'name': name,
-      'abbreviation': abbreviation,
-      'dialing_code': dialing_code,
+      'name': name.isNotEmpty ? name : " ",
+      'abbreviation': abbreviation.isNotEmpty ? abbreviation : " ",
+      'dialing_code': dialing_code.isNotEmpty ? dialing_code : " ",
     });
 
     final headers = {

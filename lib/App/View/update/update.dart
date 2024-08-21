@@ -30,6 +30,18 @@ class _UpdateState extends State<Update> {
     'dialing_code': TextEditingController(),
   };
 
+    final border = {
+    'name': Colors.grey,
+    'abbreviation': Colors.grey,
+    'dialing_code': Colors.grey
+  };
+
+  final Map<String, String?> messages = {
+    'name': null,
+    'abbreviation': null,
+    'dialing_code': null,
+  };
+
   Future<void> _callCountry() async {
     final countryCommand = CountryCommandShow(CountryShow(), widget.id);
 
@@ -96,17 +108,63 @@ class _UpdateState extends State<Update> {
         widget.id
       );
 
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: response is SuccessResponse
-              ? 'Success'
-              : response is InternalServerError
-                  ? 'Error'
-                  : 'Error de Conexión',
-          message: response.message,
-        ),
-      );
+      if (response is ValidationResponse) {
+        
+        if (response.key['name'] != null) {
+          setState(() {
+            border['name'] = Colors.red;
+            messages['name'] = response.message('name');
+            input['name']!.clear();
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              border['name'] = Colors.grey;
+              messages['name'] = null;
+            });
+          });
+        }
+
+        if (response.key['abbreviation'] != null) {
+          setState(() {
+            border['abbreviation'] = Colors.red;
+            messages['abbreviation'] = response.message('abbreviation');
+            input['abbreviation']!.clear();
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              border['abbreviation'] = Colors.grey;
+              messages['abbreviation'] = null;
+            });
+          });
+        }
+
+        if (response.key['dialing_code'] != null) {
+          setState(() {
+            border['dialing_code'] = Colors.red;
+            messages['dialing_code'] = response.message('dialing_code');
+            input['dialing_code']!.clear();
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              border['dialing_code'] = Colors.grey;
+              messages['dialing_code'] = null;
+            });
+          });
+        }
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: response is SuccessResponse
+                ? 'Success'
+                : response is InternalServerError
+                    ? 'Error'
+                    : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+        input.forEach((key, controller) => controller.clear());
+      }
     } catch (e) {
       showDialog(
         context: context,
@@ -148,6 +206,7 @@ class _UpdateState extends State<Update> {
             CustomInput(
               input: input['name']!,
               border: border['name']!,
+              error: messages['name'],
             ),
             SizedBox(height: 16.0),
             CustomLabel(text: 'Abbreviation'),
@@ -155,6 +214,7 @@ class _UpdateState extends State<Update> {
             CustomInput(
               input: input['abbreviation']!,
               border: border['abbreviation']!,
+              error: messages['abbreviation'],
             ),
             SizedBox(height: 16.0),
             CustomLabel(text: 'Dialing Code'),
@@ -162,6 +222,7 @@ class _UpdateState extends State<Update> {
             CustomInput(
               input: input['dialing_code']!,
               border: border['dialing_code']!,
+              error: messages['dialing_code'],
             ),
             SizedBox(height: 32.0),
             CustomButton(
